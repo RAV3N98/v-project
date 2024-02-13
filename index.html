@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iEWNpHEyzlZEUA7kDBQF /oIc9qD98CKO /g5eD6ZwA3 /6PUnhX6dNiq0os" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #ffe8d6;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .container {
+            background-color: #ddbea9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2; /* Place above canvas */
+            transition: opacity 2.5s ease-in-out; 
+        }
+
+        .btn-success {
+            background-color: #cb997e;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: #a5a58d;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            font-weight: bold;
+            color: #6b705c;
+        }
+
+        #smallmessage {
+            font-weight: bold;
+            color: #6b705c;
+        }
+
+        canvas {
+            position: absolute;
+            top: -15;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 15%;
+            z-index: 1; /* Place behind the container */
+        }
+
+        #rabbitImage {
+            height: 70%;
+            width: auto;
+            position: absolute;
+            bottom: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 2s ease-in-out;
+        }
+
+        .top-text {
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(50%);
+            transition: bottom 2s ease-in-out;
+        }
+    </style>
+    <title>Will You Be My Valentine?</title>
+</head>
+<body>
+    <audio autoplay>
+        <source src="5185415858.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+<div class="container text-center mt-5">
+    <h1 class="mb-4">Will You Be My Valentine?</h1>
+    <button class="btn btn-success m-2" onclick="showMessage('Yes')">Yes</button>
+    <button class="btn btn-danger m-2" onclick="showMessage('No')">No</button>
+    <p id="message"></p>
+    <small id="smallmessage"></small>
+</div>
+
+<img id="rabbitImage" src="rabbit.png" alt="Rabbit Image">
+
+<canvas></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofNvq+P6L4ahIx94me1k8f+YUINDFZg4y1" crossorigin="anonymous"></script>
+<script src="script.js"></script>
+<script>
+    const messages = [
+        "Please reconsider it :(",
+        "Don't break my heart! :(",
+        "Think about it again! :(",
+        "Can't win em all :(",
+        "Please please please please",
+        "That wasn't very having two kids and a cat of you...",
+        "I will give you $20 if you say Yes",
+        "Nevermind, now I am angy. Don't press Yes"
+    ];
+
+    function showMessage(choice) {
+        const messageElement = document.getElementById("message");
+        const smallmessage = document.getElementById("smallmessage");
+        if (choice === 'Yes') {
+            messageElement.innerText = "Yay! Happy Valentine's Day! ❤️";
+            smallmessage.innerText = "(I see you as a friend.)";
+            moveRabbitToBottom();
+            setTopText()
+            setTimeout(() => {
+                document.querySelector(".container").style.opacity = 0;
+            }, 1000);
+                setTimeout(() => {
+                    document.querySelector(".container").remove()
+                },800)
+            createFireworks();
+
+        } else if (choice === 'No') {
+            smallmessage.innerText = "";
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            messageElement.innerText = messages[randomIndex];
+        }
+    }
+
+    function moveRabbitToBottom() {
+        const rabbitImage = document.getElementById("rabbitImage");
+        rabbitImage.style.bottom = "0";
+        rabbitImage.style.height = "30%";
+    }
+
+
+  let chars, particles, canvas, ctx, w, h, current;
+let duration = 5000;
+let str = ['Happy', 'Valentines', 'Day'];
+
+function createFireworks()
+{
+    init();
+resize();
+requestAnimationFrame(render);
+addEventListener('resize', resize);
+}
+
+function makeChar(c){
+    let tmp = document.createElement('canvas');
+    let size = tmp.width = tmp.height = w<400?200:300;
+    let tmpCtx = tmp.getContext('2d');
+    tmpCtx.font = 'bold '+size+'px Arial';
+    tmpCtx.fillStyle = 'white';
+    tmpCtx.textBaseline = "middle";
+    tmpCtx.textAlign = "center";
+    tmpCtx.fillText(c, size/2, size/2);
+    let char2 = tmpCtx.getImageData(0,0,size,size);
+    let char2particles = [];
+    for(var i=0; char2particles.length< particles; i++){
+        let x = size*Math.random();
+        let y = size*Math.random();
+        let offset = parseInt(y)*size*4 + parseInt(x)*4;
+        if(char2.data[offset])
+            char2particles.push([x-size/2,y-size/2])
+    }
+    return char2particles;
+}
+
+
+    function init() {
+  canvas = document.createElement('canvas');
+  document.body.append(canvas);
+  canvas.style.zIndex = '1000'; // Set the z-index of the canvas in JavaScript as well
+  document.body.style.margin = 0;
+  document.body.style.overflow = 'hidden';
+  document.body.style.background = '#656d4a';
+  ctx = canvas.getContext('2d');
+}
+
+
+function resize() {
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    particles = innerWidth<400? 55 : 99;
+}
+
+function makeChars(t) {
+    let actual = parseInt(t / duration) % str.length;
+    if (current === actual)
+        return
+    current = actual;
+    chars = [...str[actual]].map(makeChar);
+}
+
+function render(t) {
+    makeChars(t);
+    requestAnimationFrame(render);
+    ctx.fillStyle = '#00000010'
+    ctx.fillRect(0, 0, w, h);
+    chars.forEach((pts,i) => firework(t, i, pts));
+}
+
+function firework(t, i, pts) {
+    t -= i*200;
+    let id = i + chars.length*parseInt(t - t%duration);
+    t = t % duration / duration;
+    let dx = (i+1)*w/(1+chars.length);
+    dx += Math.min(0.33, t)*100*Math.sin(id);
+    let dy = h*0.5;
+    dy += Math.sin(id*4547.411)*h*0.1;
+    if (t < 0.33) {
+      rocket(dx, dy, id, t*3);
+    } else {
+      explosion(pts, dx, dy, id, Math.min(1, Math.max(0, t-0.33)*2));
+    }
+}
+
+function rocket(x, y, id, t) {
+  ctx.fillStyle = 'white';
+  let r = 2-2*t + Math.pow(t, 15*t)*16;
+  y = h - y*t;
+  circle(x, y, r)
+}
+
+function explosion(pts, x, y, id, t) {
+  let dy = (t*t*t)*20;
+  let r = Math.sin(id)*1 + 3  
+  r = t<0.5 ? (t+0.5)*t*r:r-t*r
+  ctx.fillStyle = `hsl(${id*55}, 55%, 55%)`;
+  pts.forEach((xy,i) => {
+      if (i%20 === 0)
+        ctx.fillStyle = `hsl(${id*55}, 55%, ${55+t*Math.sin(t*55+i)*45}%)`;
+      circle(t*xy[0] + x, h - y + t*xy[1] + dy, r)
+  });
+}
+
+function circle(x,y,r) {
+  ctx.beginPath();
+  ctx.ellipse(x, y, r, r, 0, 0, 6.283);
+  ctx.fill();
+}
+
+
+function setTopText()
+{
+    var text = "Some text here.";
+    var textDiv = document.createElement("div");
+    textDiv.innerText = text;
+    $("body").append(textDiv);
+    textDiv.style.color = "#c2c5aa";
+    textDiv.setAttribute( "class","top-text");
+    textDiv.style.top = "5%";
+}
+    // Add your existing fireworks and rabbit-related code here
+</script>
+
+</body>
+</html>
